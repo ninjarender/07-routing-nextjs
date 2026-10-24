@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Note, NewNote } from "@/types/note";
+import type { Note, NewNote, NoteTag } from "@/types/note";
 
 const api = axios.create({
   baseURL: "https://notehub-public.goit.study/api",
@@ -12,6 +12,7 @@ interface FetchNotesParams {
   page: number;
   perPage?: number;
   search?: string;
+  tag?: NoteTag;
 }
 
 interface FetchNotesResponse {
@@ -23,10 +24,16 @@ export const fetchNotes = async ({
   page,
   perPage = 12,
   search,
+  tag,
 }: FetchNotesParams): Promise<FetchNotesResponse> => {
   const { data } = await api.get<FetchNotesResponse>("/notes", {
-    // порожній search не надсилаємо взагалі
-    params: { page, perPage, ...(search ? { search } : {}) },
+    // порожній search і тег «all» (undefined) не надсилаємо взагалі
+    params: {
+      page,
+      perPage,
+      ...(search ? { search } : {}),
+      ...(tag ? { tag } : {}),
+    },
   });
   return data;
 };

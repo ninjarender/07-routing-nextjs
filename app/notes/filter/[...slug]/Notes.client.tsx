@@ -11,16 +11,22 @@ import NoteForm from "@/components/NoteForm/NoteForm";
 import Loader from "@/components/Loader/Loader";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import { fetchNotes } from "@/lib/api";
+import type { NoteTag } from "@/types/note";
 import css from "./NotesPage.module.css";
 
-const NotesClient = () => {
+interface NotesClientProps {
+  tag?: NoteTag;
+}
+
+const NotesClient = ({ tag }: NotesClientProps) => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, isFetching, isError, isSuccess } = useQuery({
-    queryKey: ["notes", search, page],
-    queryFn: () => fetchNotes({ page, search }),
+    // тег — у ключі: для кожного фільтра свій кеш (undefined → "all", як у prefetch)
+    queryKey: ["notes", tag ?? "all", search, page],
+    queryFn: () => fetchNotes({ page, search, tag }),
     placeholderData: keepPreviousData,
     refetchOnMount: false, // перша сторінка вже в кеші з сервера
   });

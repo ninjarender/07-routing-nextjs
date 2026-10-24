@@ -21,7 +21,13 @@ export const metadata: Metadata = {
   description: "Create, search and manage your personal notes",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+  modal,
+}: Readonly<{
+  children: React.ReactNode;
+  modal: React.ReactNode;
+}>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
@@ -29,6 +35,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Header />
           {/* <main> — на кожній сторінці (стилі .main у CSS-модулях сторінок) */}
           {children}
+          {/* слот @modal: деталі нотатки, перехоплені з /notes/[id] */}
+          {modal}
           <Footer />
         </TanStackProvider>
       </body>
